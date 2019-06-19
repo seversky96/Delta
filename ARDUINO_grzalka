@@ -1,3 +1,6 @@
+/*Tytus Mikołajczyk, Seweryn Brosz 2019*/
+
+
 /*definicja zmiennych, nie musza byc wszystkie static*/
 		const double kp_ir=0.50, ki_ir=15.20, Ts=0.00025;/*fs=4kHz*/
 		static double e_ir_d=0.0, du_ir_d=0.0, e_ir_d_p=0.0, in_sat_ir_d=0.0, out_sat_ir_d=0.0;
