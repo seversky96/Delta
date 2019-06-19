@@ -1,0 +1,72 @@
+/*definicja zmiennych, nie musza byc wszystkie static*/
+		const double kp_ir=0.50, ki_ir=15.20, Ts=0.00025;/*fs=4kHz*/
+		static double e_ir_d=0.0, du_ir_d=0.0, e_ir_d_p=0.0, in_sat_ir_d=0.0, out_sat_ir_d=0.0;
+		static double u_ir_d=0.0, u_ir_d_p=0.0;
+		/*obliczenie uchybu*/
+		e_ir_d = ir_d_z-ir_d;
+		/*dyskretny regulator PI*/
+		du_ir_d =e_ir_d*(kp_ir+Ts*ki_ir) - e_ir_d_p*kp_ir;
+		e_ir_d_p = e_ir_d;
+		in_sat_ir_d = du_ir_d + u_ir_d_p;
+		
+		/*nasycenie wyjscia regulatora*/
+		if(in_sat_ir_d>2000.0)  out_sat_ir_d=2000.0;
+		else if(in_sat_ir_d<-2000.0)  out_sat_ir_d=-2000.0;
+		else  out_sat_ir_d= in_sat_ir_d;
+		
+		/*przepisanie wartosci zmiennych*/
+		u_ir_d = out_sat_ir_d;
+		u_ir_d_p = u_ir_d;
+		
+		/*ustawienie wyjscia regulatora, w tym przypadku nie jest konieczne bo mamy tylko dodatkową zmienna, ale by było wiadomo co jest wyjsciem*/
+		outR_ir_d=u_ir_d;
+		
+
+#include<LiquidCrystal.h>
+#define a -5.16520255795299e-07
+#define b 0.000871937541924753
+#define c -0.594359941886608
+#define d 248.942655757154
+LiquidCrystal lcd(16,17,23,25,27,29);
+float t=0;
+double y, e;
+int u =0;
+
+void setup() {
+  
+lcd.begin(20,4);
+
+}
+
+void loop() {
+  
+  t = analogRead(13);
+  y = a * t * t * t + b * t * t + c * t + d;
+  lcd.setCursor(0,1);
+  lcd.print("temperatura ");
+  lcd.print(y);
+  e = 100-y;
+  u = round(255* e / 80 );
+  if(u > 255)
+  {
+    u =255; 
+  }
+  if(u<0)
+  {
+    u=0;
+  }
+  if(y<100)  
+  {
+    digitalWrite(10,HIGH);
+    lcd.setCursor(0,0);
+  lcd.print("grzeje ");
+  
+  } 
+  else
+  {
+    digitalWrite(10,LOW);
+     lcd.setCursor(0,0);
+  lcd.print("chlodze ");
+  } 
+  
+}
