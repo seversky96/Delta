@@ -1,3 +1,6 @@
+/*Tytus Mikołajczyk, Seweryn Brosz 2019*/
+
+
 ///ARDUINO IDE 
 #define X_MIN_PIN           3
 #ifndef X_MAX_PIN
