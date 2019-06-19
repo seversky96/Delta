@@ -1,0 +1,116 @@
+///ARDUINO IDE 
+#define X_MIN_PIN           3
+#ifndef X_MAX_PIN
+#define X_MAX_PIN         2
+#endif
+#define Y_MIN_PIN          14
+#define Y_MAX_PIN          15
+#define Z_MIN_PIN          18
+#define Z_MAX_PIN          19
+
+#define X_STEP_PIN         54
+#define X_DIR_PIN          55
+#define X_ENABLE_PIN       38
+#ifndef X_CS_PIN
+#define X_CS_PIN         53
+#endif
+
+#define Y_STEP_PIN         60
+#define Y_DIR_PIN          61
+#define Y_ENABLE_PIN       56
+#ifndef Y_CS_PIN
+#define Y_CS_PIN         49
+#endif
+
+#define Z_STEP_PIN         46
+#define Z_DIR_PIN          48
+#define Z_ENABLE_PIN       62
+#ifndef Z_CS_PIN
+#define Z_CS_PIN         40
+#endif
+int i = 0;
+bool kierunek1 = 0;
+bool kierunek2 = 0;
+bool kierunek3 = 0;
+bool xKrancowka;
+bool yKrancowka;
+bool zKrancowka;
+String bufor;
+int k1=0, k2=0, k3=0;
+int ku1=0, ku2=0, ku3=0, flaga = 0;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(X_ENABLE_PIN, OUTPUT);
+  digitalWrite(X_ENABLE_PIN, LOW);
+  pinMode(X_DIR_PIN, OUTPUT);
+  digitalWrite(X_DIR_PIN, LOW);
+  pinMode(X_STEP_PIN, OUTPUT);
+
+  pinMode(Y_ENABLE_PIN, OUTPUT);
+  digitalWrite(Y_ENABLE_PIN, LOW);
+  pinMode(Y_DIR_PIN, OUTPUT);
+  digitalWrite(Y_DIR_PIN, LOW);
+  pinMode(Y_STEP_PIN, OUTPUT);
+
+  pinMode(Z_ENABLE_PIN, OUTPUT);
+  digitalWrite(Z_ENABLE_PIN, LOW);
+  pinMode(Z_DIR_PIN, OUTPUT);
+  digitalWrite(Z_DIR_PIN, LOW);
+  pinMode(Z_STEP_PIN, OUTPUT);
+
+  pinMode(X_MAX_PIN, INPUT_PULLUP);
+  pinMode(Y_MAX_PIN, INPUT_PULLUP);
+  pinMode(Z_MAX_PIN, INPUT_PULLUP);
+
+  }
+void loop() {
+  //
+  xKrancowka = digitalRead(X_MAX_PIN);
+  yKrancowka = digitalRead(Y_MAX_PIN);
+  zKrancowka = digitalRead(Z_MAX_PIN);
+  digitalWrite(X_STEP_PIN, HIGH);
+  digitalWrite(Y_STEP_PIN, HIGH);
+  digitalWrite(Z_STEP_PIN, HIGH);
+  delayMicroseconds(1000);
+  if( (xKrancowka == 0)&& ku1 >0)
+  {
+    digitalWrite(X_STEP_PIN, LOW);
+    ku1--;
+  }
+  if( (yKrancowka == 0)  && ku2 >0)
+  {
+    digitalWrite(Y_STEP_PIN, LOW);
+    ku2--;
+  }
+  if( (zKrancowka == 0)&& ku3 >0)
+  {
+    digitalWrite(Z_STEP_PIN, LOW);
+    ku3--;
+  }
+
+  delayMicroseconds(250);
+
+ 
+  while (Serial.available() > 0)
+  {
+    bufor = Serial.readStringUntil('\n');
+    sscanf(bufor.c_str(), "k1 %d ; k2 %d ; k3 %d ", &k1, &k2, &k3);
+    ku1 = k1>0 ? k1: -k1;
+    ku2 = k2>0 ? k2: -k2;
+    ku3 = k3>0 ? k3: -k3;    
+    kierunek1 = k1 < 0;           
+    kierunek2 = k2 < 0;
+    kierunek3 = k3 < 0;    
+    digitalWrite(X_DIR_PIN, kierunek1);
+    digitalWrite(Y_DIR_PIN, kierunek2);
+    digitalWrite(Z_DIR_PIN, kierunek3);
+    flaga = 1;
+  }
+  /// sprawdzamy czykoniec ruchu czyjeszcze sie rusza 
+  if(ku1 == 0 && ku2 == 0 && ku3 == 0 && flaga ==1)
+  {
+    Serial.println("ok");
+    flaga = 0; 
+  }
+}
