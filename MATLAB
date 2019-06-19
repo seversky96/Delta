@@ -1,0 +1,27 @@
+%% MATLAB KOOPA1
+
+stare1 = 0; 
+stare2 = round(500*sin(0+2*pi/3));
+stare3 = round(500*sin(0+4*pi/3));
+for t=0:0.1:8*pi
+    k1 = round(500*sin(t));
+    k2 = round(500*sin(t+2*pi/3))
+    k3 = round(500*sin(t+4*pi/3))
+    fprintf(S,'k1 %d; k2 %d; k3 %d \n', [k1-stare1, k2-stare2, k3-stare3]);
+    while(S.BytesAvailable == 0),end
+    while(S.BytesAvailable >0)
+        fscanf(S);
+    end
+        stare1 = k1;
+        stare2 = k2;
+        stare3 = k3;
+%     fprintf(S,'k1 %d; k2 %d; k3 %d \n', [0, 0, 0]);
+end
+%%%%%
+%% START KOMUNIKACJI MATLAB 
+k1 = 0; 
+k2 = 0;
+k3 = 0;
+S = serial('/dev/ttyUSB0');
+S.BaudRate = 115200;
+fopen(S)
