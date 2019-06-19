@@ -1,3 +1,5 @@
+%Tytus Mikołajczyk, Seweryn Brosz 2019
+
 %% MATLAB KOOPA1
 
 stare1 = 0; 
